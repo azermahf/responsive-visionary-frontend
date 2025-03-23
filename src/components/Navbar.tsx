@@ -31,7 +31,12 @@ const Navbar = () => {
       <div className="container mx-auto flex items-center justify-between px-4">
         <div className="flex items-center">
           <Link to="/" className="flex items-center">
-            <span className="font-serif text-gold text-2xl font-bold">Wajdi Coiff</span>
+            <img 
+              src="/lovable-uploads/87ab9ab6-0df5-4d6a-88fb-ba2d9e52156f.png" 
+              alt="Wajdi Coiff Logo" 
+              className="h-12 mr-2" 
+            />
+            <span className="font-serif text-white text-2xl font-bold">Wajdi Coiff</span>
           </Link>
         </div>
 
