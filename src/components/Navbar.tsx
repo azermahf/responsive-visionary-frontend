@@ -31,9 +31,7 @@ const Navbar = () => {
       <div className="container mx-auto flex items-center justify-between px-4">
         <div className="flex items-center">
           <Link to="/" className="flex items-center">
-            <span className="font-serif text-gold text-xl">Silidium</span>
-            <span className="font-sans text-white text-2xl font-bold mx-1">BARBER</span>
-            <span className="font-serif text-gold text-xl">SHOP</span>
+            <span className="font-serif text-gold text-2xl font-bold">Wajdi Coiff</span>
           </Link>
         </div>
 

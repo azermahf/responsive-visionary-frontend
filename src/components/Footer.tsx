@@ -10,9 +10,7 @@ const Footer = () => {
           <div className="animate-fadeInUp animate-delay-100">
             <div className="mb-6">
               <Link to="/" className="flex items-center">
-                <span className="font-serif text-gold text-xl">Silidium</span>
-                <span className="font-sans text-white text-2xl font-bold mx-1">BARBER</span>
-                <span className="font-serif text-gold text-xl">SHOP</span>
+                <span className="font-serif text-gold text-2xl font-bold">Wajdi Coiff</span>
               </Link>
             </div>
             <p className="text-gray-400 mb-6">
@@ -86,7 +84,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center">
                 <Mail className="text-gold mr-3" size={18} />
-                <span className="text-gray-400">info@silidiumbarbershop.com</span>
+                <span className="text-gray-400">info@wajdicoiff.com</span>
               </li>
               <li className="flex items-start">
                 <Clock className="text-gold mt-1 mr-3" size={18} />
@@ -101,7 +99,7 @@ const Footer = () => {
 
         <div className="border-t border-gray-800 mt-12 pt-8 text-center">
           <p className="text-gray-500">
-            © {new Date().getFullYear()} Silidium Barber Shop. All rights reserved.
+            © {new Date().getFullYear()} Wajdi Coiff. All rights reserved.
           </p>
         </div>
       </div>
