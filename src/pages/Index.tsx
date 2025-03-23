@@ -34,10 +34,10 @@ const Index = () => {
             >
               <img 
                 src="/lovable-uploads/87ab9ab6-0df5-4d6a-88fb-ba2d9e52156f.png" 
-                alt="Wajdi Coiff Logo" 
+                alt="Logo" 
                 className="h-32 mb-6" 
               />
-              <h2 className="text-white font-serif text-4xl mb-4">Welcome to Wajdi Coiff</h2>
+              <h2 className="text-white font-serif text-4xl mb-4">Welcome</h2>
               <div className="h-1 w-24 bg-gold mb-6"></div>
               <p className="text-gray-300 max-w-2xl mb-8">
                 Experience premium grooming services tailored to your unique style. 

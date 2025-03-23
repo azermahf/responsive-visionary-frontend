@@ -12,10 +12,9 @@ const Footer = () => {
               <Link to="/" className="flex items-center">
                 <img 
                   src="/lovable-uploads/87ab9ab6-0df5-4d6a-88fb-ba2d9e52156f.png" 
-                  alt="Wajdi Coiff Logo" 
-                  className="h-12 mr-2" 
+                  alt="Logo" 
+                  className="h-12" 
                 />
-                <span className="font-serif text-white text-2xl font-bold">Wajdi Coiff</span>
               </Link>
             </div>
             <p className="text-gray-400 mb-6">
@@ -104,7 +103,7 @@ const Footer = () => {
 
         <div className="border-t border-gray-800 mt-12 pt-8 text-center">
           <p className="text-gray-500">
-            © {new Date().getFullYear()} Wajdi Coiff. All rights reserved.
+            © {new Date().getFullYear()} All rights reserved.
           </p>
         </div>
       </div>
