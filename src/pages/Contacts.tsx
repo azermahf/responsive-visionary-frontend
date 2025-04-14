@@ -1,20 +1,64 @@
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Phone, MapPin, Mail, Clock } from 'lucide-react';
+import { contactService } from '../services/api';
+import { useToast } from '../hooks/use-toast';
 
 const ContactsPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Dans une implémentation réelle, vous traiteriez le formulaire ici
-    console.log('Form submitted');
-    // Afficher un message à l'utilisateur
-    alert('Message sent successfully! We will contact you shortly.');
+    setIsSubmitting(true);
+    
+    try {
+      // Call the API service to send contact message
+      const response = await contactService.sendMessage(formData);
+      console.log('Message sent:', response);
+      
+      // Show success toast
+      toast({
+        title: "Message Sent!",
+        description: "We'll get back to you as soon as possible.",
+      });
+      
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+      });
+    } catch (error) {
+      console.error('Error sending message:', error);
+      
+      // Show error toast
+      toast({
+        title: "Error",
+        description: "There was a problem sending your message. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -69,7 +113,7 @@ const ContactsPage = () => {
                     <Mail className="text-gold mt-1 mr-4" size={24} />
                     <div>
                       <h3 className="font-bold text-lg mb-1">Email Us</h3>
-                      <p className="text-gray-700">info@silidiumbarbershop.com</p>
+                      <p className="text-gray-700">info@barbershop.com</p>
                     </div>
                   </div>
 
@@ -93,6 +137,9 @@ const ContactsPage = () => {
                     <input
                       type="text"
                       id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent"
                       required
                     />
@@ -103,6 +150,9 @@ const ContactsPage = () => {
                     <input
                       type="email"
                       id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent"
                       required
                     />
@@ -113,6 +163,9 @@ const ContactsPage = () => {
                     <input
                       type="text"
                       id="subject"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent"
                       required
                     />
@@ -122,6 +175,9 @@ const ContactsPage = () => {
                     <label htmlFor="message" className="block text-gray-700 mb-2">Message</label>
                     <textarea
                       id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
                       rows={5}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent"
                       required
@@ -130,9 +186,10 @@ const ContactsPage = () => {
 
                   <button
                     type="submit"
+                    disabled={isSubmitting}
                     className="w-full py-3 px-4 bg-gold text-white font-medium tracking-wide transition-all duration-300 hover:bg-gold-dark hover:shadow-lg"
                   >
-                    Send Message
+                    {isSubmitting ? 'Sending...' : 'Send Message'}
                   </button>
                 </form>
               </div>

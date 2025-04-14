@@ -1,14 +1,17 @@
-
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Check } from 'lucide-react';
+import { appointmentService } from '../services/api';
+import { useToast } from '../hooks/use-toast';
 
 const AppointmentPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formStep, setFormStep] = useState(1);
   const [formData, setFormData] = useState({
     service: '',
@@ -38,18 +41,37 @@ const AppointmentPage = () => {
     setFormStep(prev => prev - 1);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form data submitted:', formData);
-    // Dans une implémentation réelle, vous enverriez ces données à un serveur
-    setFormStep(3); // Succès
+    setIsSubmitting(true);
+    
+    try {
+      const response = await appointmentService.bookAppointment(formData);
+      console.log('Appointment booked:', response);
+      
+      toast({
+        title: "Success!",
+        description: "Your appointment has been booked successfully.",
+      });
+      
+      setFormStep(3);
+    } catch (error) {
+      console.error('Error booking appointment:', error);
+      
+      toast({
+        title: "Error",
+        description: "There was a problem booking your appointment. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow pt-24">
-        {/* Hero Section */}
         <div className="bg-dark py-16 text-center">
           <div className="container mx-auto px-4">
             <h1 className="text-4xl md:text-5xl font-serif text-white mb-4">Book an Appointment</h1>
@@ -64,11 +86,9 @@ const AppointmentPage = () => {
           </div>
         </div>
 
-        {/* Appointment Form */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto">
-              {/* Progress Tracker */}
               <div className="mb-12">
                 <div className="flex items-center justify-between">
                   <div className={`flex flex-col items-center ${formStep >= 1 ? 'text-gold' : 'text-gray-400'}`}>
@@ -98,7 +118,6 @@ const AppointmentPage = () => {
                 </div>
               </div>
 
-              {/* Step 1: Service Details */}
               {formStep === 1 && (
                 <form onSubmit={(e) => { e.preventDefault(); nextStep(); }}>
                   <div className="bg-gray-50 p-8 rounded-md shadow-sm">
@@ -178,7 +197,6 @@ const AppointmentPage = () => {
                 </form>
               )}
 
-              {/* Step 2: Personal Information */}
               {formStep === 2 && (
                 <form onSubmit={handleSubmit}>
                   <div className="bg-gray-50 p-8 rounded-md shadow-sm">
@@ -246,16 +264,16 @@ const AppointmentPage = () => {
                       
                       <button
                         type="submit"
+                        disabled={isSubmitting}
                         className="py-3 px-6 bg-gold text-white font-medium tracking-wide transition-all duration-300 hover:bg-gold-dark hover:shadow-lg"
                       >
-                        Book Appointment
+                        {isSubmitting ? 'Booking...' : 'Book Appointment'}
                       </button>
                     </div>
                   </div>
                 </form>
               )}
 
-              {/* Step 3: Confirmation */}
               {formStep === 3 && (
                 <div className="bg-gray-50 p-8 rounded-md shadow-sm text-center">
                   <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -265,7 +283,7 @@ const AppointmentPage = () => {
                   <h2 className="text-2xl font-bold mb-4">Appointment Confirmed!</h2>
                   
                   <p className="text-gray-700 mb-6">
-                    Thank you for booking with Silidium Barber Shop. We've sent a confirmation to your email.
+                    Thank you for booking with us. We've sent a confirmation to your email.
                   </p>
                   
                   <div className="bg-white p-6 rounded-md border border-gray-200 mb-8 text-left">
