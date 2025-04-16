@@ -8,6 +8,19 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-black/60"></div>
       
       <div className="hero-content">
+        <motion.div
+          className="flex justify-center md:justify-start mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+        >
+          <img 
+            src="/lovable-uploads/49f5560c-6642-46ee-9f7a-98f25ed953ea.png" 
+            alt="Barber Shop Logo" 
+            className="h-28 md:h-32 filter brightness-110 contrast-125 saturate-150"
+          />
+        </motion.div>
+        
         <motion.h1 
           className="text-4xl md:text-5xl lg:text-7xl text-white font-serif mb-4 opacity-0"
           initial={{ opacity: 0, y: 20 }}
