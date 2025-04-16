@@ -45,7 +45,7 @@ const Index = () => {
                 to create the perfect look for you.
               </p>
               <Link 
-                to="/about" 
+                to="/appointment" 
                 className="py-3 px-8 bg-gold text-white font-medium tracking-wide transition-all duration-300 hover:bg-gold-dark hover:shadow-lg"
               >
                 Learn More About Us
@@ -54,7 +54,39 @@ const Index = () => {
           </div>
         </motion.section>
         
-        {/* Additional sections could be added here */}
+        {/* Barber Logo Section */}
+        <motion.section
+          className="py-20 bg-dark"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="container mx-auto px-4">
+            <motion.div 
+              className="flex flex-col items-center"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <img 
+                src="/lovable-uploads/49f5560c-6642-46ee-9f7a-98f25ed953ea.png" 
+                alt="Barber Shop Logo" 
+                className="w-full max-w-xl mx-auto mb-10" 
+              />
+              <div className="h-1 w-24 bg-gold mb-8"></div>
+              <p className="text-gray-300 text-center max-w-2xl mx-auto mb-10">
+                Our expert barbers are masters of their craft, providing exceptional 
+                services that leave you looking and feeling your best.
+              </p>
+              <Link 
+                to="/appointment" 
+                className="py-4 px-10 bg-gold text-white font-medium tracking-wide transition-all duration-300 hover:bg-gold-dark hover:shadow-lg text-lg"
+              >
+                Book Your Appointment Now
+              </Link>
+            </motion.div>
+          </div>
+        </motion.section>
       </main>
       <Footer />
     </div>
