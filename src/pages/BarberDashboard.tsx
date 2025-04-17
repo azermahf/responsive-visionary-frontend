@@ -14,16 +14,20 @@ import CoworkersPanel from '../components/barber/CoworkersPanel';
 const BarberDashboard = () => {
   const navigate = useNavigate();
   const [barberName, setBarberName] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
   
   useEffect(() => {
     // Check if user is logged in
     const storedName = localStorage.getItem('barberName');
+    const storedRole = localStorage.getItem('barberRole');
+    
     if (!storedName) {
       navigate('/barber-login');
       return;
     }
     
     setBarberName(storedName);
+    setIsAdmin(storedRole === 'admin');
     
     // Scroll to top when component mounts
     window.scrollTo(0, 0);
@@ -32,6 +36,7 @@ const BarberDashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem('barberId');
     localStorage.removeItem('barberName');
+    localStorage.removeItem('barberRole');
     navigate('/barber-login');
   };
 
@@ -61,7 +66,7 @@ const BarberDashboard = () => {
                 </div>
                 <div className="ml-4">
                   <h1 className="text-xl md:text-2xl font-serif text-white">Welcome, {barberName}</h1>
-                  <p className="text-gold/80">Barber Dashboard</p>
+                  <p className="text-gold/80">{isAdmin ? 'Admin Dashboard' : 'Barber Dashboard'}</p>
                 </div>
               </div>
               
@@ -88,7 +93,7 @@ const BarberDashboard = () => {
                     value="clients" 
                     className="data-[state=active]:bg-gold data-[state=active]:text-white"
                   >
-                    Clients
+                    Statistics
                   </TabsTrigger>
                   <TabsTrigger 
                     value="availability" 
@@ -96,12 +101,14 @@ const BarberDashboard = () => {
                   >
                     Availability
                   </TabsTrigger>
-                  <TabsTrigger 
-                    value="coworkers" 
-                    className="data-[state=active]:bg-gold data-[state=active]:text-white"
-                  >
-                    Coworkers
-                  </TabsTrigger>
+                  {isAdmin && (
+                    <TabsTrigger 
+                      value="coworkers" 
+                      className="data-[state=active]:bg-gold data-[state=active]:text-white"
+                    >
+                      Coworkers
+                    </TabsTrigger>
+                  )}
                 </TabsList>
                 
                 <TabsContent value="appointments">
@@ -109,16 +116,18 @@ const BarberDashboard = () => {
                 </TabsContent>
                 
                 <TabsContent value="clients">
-                  <ClientsPanel />
+                  <ClientsPanel isAdmin={isAdmin} />
                 </TabsContent>
                 
                 <TabsContent value="availability">
                   <AvailabilityPanel />
                 </TabsContent>
                 
-                <TabsContent value="coworkers">
-                  <CoworkersPanel />
-                </TabsContent>
+                {isAdmin && (
+                  <TabsContent value="coworkers">
+                    <CoworkersPanel />
+                  </TabsContent>
+                )}
               </Tabs>
             </div>
           </motion.div>

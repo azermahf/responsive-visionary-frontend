@@ -21,8 +21,9 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 // Mock barber data for demo purposes
 const MOCK_BARBERS = [
-  { id: 1, email: "barber1@example.com", password: "password123", name: "John Smith" },
-  { id: 2, email: "barber2@example.com", password: "password123", name: "Jane Doe" },
+  { id: 1, email: "admin@example.com", password: "password123", name: "John Smith", role: "admin" },
+  { id: 2, email: "barber1@example.com", password: "password123", name: "Jane Doe", role: "coworker" },
+  { id: 3, email: "barber2@example.com", password: "password123", name: "Mike Johnson", role: "coworker" },
 ];
 
 const BarberLogin = () => {
@@ -45,9 +46,10 @@ const BarberLogin = () => {
       const barber = MOCK_BARBERS.find(b => b.email === data.email && b.password === data.password);
       
       if (barber) {
-        // Store barber info in localStorage (in a real app, use proper authentication tokens)
+        // Store barber info in localStorage
         localStorage.setItem('barberId', barber.id.toString());
         localStorage.setItem('barberName', barber.name);
+        localStorage.setItem('barberRole', barber.role);
         
         toast({
           title: "Login successful",
