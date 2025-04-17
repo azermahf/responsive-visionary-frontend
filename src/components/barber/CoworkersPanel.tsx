@@ -1,12 +1,16 @@
+
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Scissors, Phone, Mail, Calendar as CalendarIcon, Clock, User, PlusCircle, DollarSign, TrendingUp } from 'lucide-react';
 import AddCoworkerDialog from './AddCoworkerDialog';
+
+// Define weekdays array for schedule display
+const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 const MOCK_COWORKERS = [
   {
