@@ -26,10 +26,13 @@ const AddCoworkerDialog = ({ onClose, onAdd }: AddCoworkerDialogProps) => {
       id: Date.now(),
       name,
       email,
-      role: 'coworker',
+      role: 'Junior Barber',
       password: tempPassword, // In real app, this would be hashed
       specialty: 'Basic Cuts',
       phone: '',
+      monthlyIncome: 0,
+      lastMonthIncome: 0,
+      topClients: [],
       availability: {
         Monday: [],
         Tuesday: [],
@@ -48,6 +51,7 @@ const AddCoworkerDialog = ({ onClose, onAdd }: AddCoworkerDialogProps) => {
         description: `Temporary password: ${tempPassword}`,
       });
       onClose();
+      setLoading(false);
     }, 1000);
   };
 

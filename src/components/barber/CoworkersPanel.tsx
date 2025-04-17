@@ -43,6 +43,12 @@ const MOCK_COWORKERS = [
     specialty: "Fades, Modern Styles",
     phone: "+1 (555) 987-6543",
     email: "mark.johnson@example.com",
+    monthlyIncome: 3900,
+    lastMonthIncome: 3600,
+    topClients: [
+      { name: "Michael Brown", visits: 7, spent: 280 },
+      { name: "James Wilson", visits: 5, spent: 200 }
+    ],
     availability: {
       Monday: ["10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00", "18:00"],
       Tuesday: ["10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00", "18:00"],
@@ -60,6 +66,12 @@ const MOCK_COWORKERS = [
     specialty: "Basic Cuts, Shaves",
     phone: "+1 (555) 456-7890",
     email: "sarah.williams@example.com",
+    monthlyIncome: 2800,
+    lastMonthIncome: 2500,
+    topClients: [
+      { name: "David Jones", visits: 6, spent: 240 },
+      { name: "Robert Taylor", visits: 4, spent: 160 }
+    ],
     availability: {
       Monday: ["14:00", "15:00", "16:00", "17:00", "18:00"],
       Tuesday: ["14:00", "15:00", "16:00", "17:00", "18:00"],
@@ -79,7 +91,24 @@ const CoworkersPanel = () => {
   const [coworkers, setCoworkers] = useState(MOCK_COWORKERS);
   
   const handleAddCoworker = (newCoworker: any) => {
-    setCoworkers([...coworkers, newCoworker]);
+    // Ensure the new coworker has all required properties
+    const completeCoworker = {
+      ...newCoworker,
+      monthlyIncome: newCoworker.monthlyIncome || 0,
+      lastMonthIncome: newCoworker.lastMonthIncome || 0,
+      topClients: newCoworker.topClients || [],
+      availability: newCoworker.availability || {
+        Monday: [],
+        Tuesday: [],
+        Wednesday: [],
+        Thursday: [],
+        Friday: [],
+        Saturday: [],
+        Sunday: []
+      }
+    };
+    
+    setCoworkers([...coworkers, completeCoworker]);
   };
   
   return (
@@ -155,25 +184,30 @@ const CoworkersPanel = () => {
                 <div className="flex-shrink-0 w-full md:w-64 p-4 bg-dark rounded-lg border border-gold/20">
                   <h4 className="text-white font-serif mb-2">Monthly Income</h4>
                   <div className="text-2xl font-bold text-gold mb-2">
-                    ${coworker.monthlyIncome}
+                    ${coworker.monthlyIncome || 0}
                   </div>
-                  <div className="flex items-center text-sm">
-                    <TrendingUp size={16} className="text-green-400 mr-1" />
-                    <span className="text-green-400">
-                      +{((coworker.monthlyIncome - coworker.lastMonthIncome) / coworker.lastMonthIncome * 100).toFixed(1)}%
-                    </span>
-                    <span className="text-gray-400 ml-2">vs last month</span>
-                  </div>
+                  {coworker.monthlyIncome && coworker.lastMonthIncome && (
+                    <div className="flex items-center text-sm">
+                      <TrendingUp size={16} className="text-green-400 mr-1" />
+                      <span className="text-green-400">
+                        +{((coworker.monthlyIncome - coworker.lastMonthIncome) / coworker.lastMonthIncome * 100).toFixed(1)}%
+                      </span>
+                      <span className="text-gray-400 ml-2">vs last month</span>
+                    </div>
+                  )}
                   
                   <div className="mt-4">
                     <h5 className="text-white text-sm mb-2">Top Clients</h5>
                     <div className="space-y-2">
-                      {coworker.topClients.map((client, index) => (
+                      {(coworker.topClients || []).map((client, index) => (
                         <div key={index} className="flex justify-between text-sm">
                           <span className="text-gray-400">{client.name}</span>
                           <span className="text-gold">${client.spent}</span>
                         </div>
                       ))}
+                      {(!coworker.topClients || coworker.topClients.length === 0) && (
+                        <div className="text-gray-400 text-sm">No top clients yet</div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -196,7 +230,7 @@ const CoworkersPanel = () => {
                     </DialogHeader>
                     <div className="mt-4">
                       <h4 className="text-lg mb-3">Availability for {selectedDay}</h4>
-                      {coworker.availability[selectedDay].length > 0 ? (
+                      {coworker.availability && coworker.availability[selectedDay] && coworker.availability[selectedDay].length > 0 ? (
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                           {coworker.availability[selectedDay].map(time => (
                             <div 
@@ -223,11 +257,11 @@ const CoworkersPanel = () => {
                               {day.slice(0, 3)}
                             </div>
                             <div className={`text-sm ${
-                              coworker.availability[day].length > 0 
+                              coworker.availability && coworker.availability[day] && coworker.availability[day].length > 0 
                                 ? 'text-green-400' 
                                 : 'text-red-400'
                             }`}>
-                              {coworker.availability[day].length > 0 
+                              {coworker.availability && coworker.availability[day] && coworker.availability[day].length > 0 
                                 ? `${coworker.availability[day].length} slots` 
                                 : 'Off'}
                             </div>
