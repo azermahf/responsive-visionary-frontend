@@ -41,13 +41,13 @@ const BarberDashboard = () => {
   };
 
   if (!barberName) {
-    return <div className="min-h-screen bg-white flex items-center justify-center">
-      <p className="text-neutral-700">Loading...</p>
+    return <div className="min-h-screen bg-dark flex items-center justify-center">
+      <p className="text-white">Loading...</p>
     </div>;
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-dark">
       <Navbar />
       
       <div className="flex-grow py-20 px-4 md:px-8 lg:px-12">
@@ -56,24 +56,24 @@ const BarberDashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-white rounded-lg shadow-light border border-neutral-200 overflow-hidden"
+            className="bg-dark-light rounded-lg border border-gold/20 overflow-hidden"
           >
             {/* Dashboard Header */}
-            <div className="p-6 md:p-8 border-b border-neutral-200 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="p-6 md:p-8 border-b border-gold/20 flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="flex items-center">
-                <div className="h-12 w-12 rounded-full bg-gold/10 flex items-center justify-center text-gold text-xl font-bold">
+                <div className="h-12 w-12 rounded-full bg-gold/20 flex items-center justify-center text-gold text-xl font-bold">
                   {barberName.charAt(0)}
                 </div>
                 <div className="ml-4">
-                  <h1 className="text-xl md:text-2xl font-sans text-neutral-900">Welcome, {barberName}</h1>
-                  <p className="text-neutral-600">{isAdmin ? 'Admin Dashboard' : 'Barber Dashboard'}</p>
+                  <h1 className="text-xl md:text-2xl font-serif text-white">Welcome, {barberName}</h1>
+                  <p className="text-gold/80">{isAdmin ? 'Admin Dashboard' : 'Barber Dashboard'}</p>
                 </div>
               </div>
               
               <Button 
                 variant="outline" 
                 onClick={handleLogout}
-                className="border-neutral-300 text-neutral-700 hover:bg-neutral-100"
+                className="border-gold/40 text-gold hover:bg-gold/10"
               >
                 Logout
               </Button>
@@ -82,29 +82,29 @@ const BarberDashboard = () => {
             {/* Dashboard Content */}
             <div className="p-6 md:p-8">
               <Tabs defaultValue="appointments" className="w-full">
-                <TabsList className="grid grid-cols-2 md:grid-cols-4 gap-2 bg-neutral-50 mb-8">
+                <TabsList className="grid grid-cols-2 md:grid-cols-4 gap-2 bg-dark mb-8">
                   <TabsTrigger 
                     value="appointments" 
-                    className="data-[state=active]:bg-gold data-[state=active]:text-white text-neutral-700"
+                    className="data-[state=active]:bg-gold data-[state=active]:text-white"
                   >
                     Appointments
                   </TabsTrigger>
                   <TabsTrigger 
                     value="clients" 
-                    className="data-[state=active]:bg-gold data-[state=active]:text-white text-neutral-700"
+                    className="data-[state=active]:bg-gold data-[state=active]:text-white"
                   >
                     Statistics
                   </TabsTrigger>
                   <TabsTrigger 
                     value="availability" 
-                    className="data-[state=active]:bg-gold data-[state=active]:text-white text-neutral-700"
+                    className="data-[state=active]:bg-gold data-[state=active]:text-white"
                   >
                     Availability
                   </TabsTrigger>
                   {isAdmin && (
                     <TabsTrigger 
                       value="coworkers" 
-                      className="data-[state=active]:bg-gold data-[state=active]:text-white text-neutral-700"
+                      className="data-[state=active]:bg-gold data-[state=active]:text-white"
                     >
                       Coworkers
                     </TabsTrigger>

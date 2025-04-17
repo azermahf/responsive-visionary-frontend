@@ -71,7 +71,7 @@
 
 @layer base {
   * {
-    @apply border-neutral-200;
+    @apply border-border;
   }
 
   body {
@@ -104,7 +104,7 @@
 }
 
 .navbar-glass {
-  @apply backdrop-blur-md bg-dark-80 border-b border-gold/10;
+  @apply backdrop-blur-md bg-dark/80 border-b border-gold/10;
 }
 
 @keyframes fadeInUp {
