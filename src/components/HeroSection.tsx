@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useIsMobile } from '../hooks/use-mobile';
+import { Scissors } from 'lucide-react';
 
 const HeroSection = () => {
   const isMobile = useIsMobile();
@@ -58,13 +59,21 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="flex justify-center md:justify-start"
+            className="flex flex-col sm:flex-row justify-center md:justify-start gap-4"
           >
             <Link 
               to="/appointment" 
-              className="inline-block py-3 px-8 bg-gold text-white font-medium tracking-wide transition-all duration-300 hover:bg-gold-dark hover:shadow-lg"
+              className="inline-block py-3 px-8 bg-gold text-white font-medium tracking-wide transition-all duration-300 hover:bg-gold-dark hover:shadow-lg text-center"
             >
-              Appointment
+              Book Appointment
+            </Link>
+            
+            <Link 
+              to="/barber-login" 
+              className="inline-block py-3 px-8 bg-transparent border border-gold text-white font-medium tracking-wide transition-all duration-300 hover:bg-gold/10 hover:shadow-lg flex items-center justify-center"
+            >
+              <Scissors size={18} className="mr-2" />
+              Barber Login
             </Link>
           </motion.div>
         </div>

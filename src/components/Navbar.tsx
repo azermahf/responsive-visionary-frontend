@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Scissors } from 'lucide-react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,9 +44,12 @@ const Navbar = () => {
           <Link to="/" className="nav-link active">Home</Link>
           <Link to="/services" className="nav-link">Services</Link>
           <Link to="/about" className="nav-link">About us</Link>
-          <Link to="/pages" className="nav-link">Pages</Link>
-          <Link to="/contacts" className="nav-link">Contacts</Link>
           <Link to="/appointment" className="nav-link">Appointment</Link>
+          <Link to="/contacts" className="nav-link">Contacts</Link>
+          <Link to="/barber-login" className="nav-link flex items-center">
+            <Scissors size={16} className="mr-1" />
+            Barber Login
+          </Link>
         </div>
 
         {/* Mobile menu button */}
@@ -86,13 +89,6 @@ const Navbar = () => {
             About us
           </Link>
           <Link 
-            to="/pages" 
-            className="nav-link" 
-            onClick={() => setIsOpen(false)}
-          >
-            Pages
-          </Link>
-          <Link 
             to="/contacts" 
             className="nav-link" 
             onClick={() => setIsOpen(false)}
@@ -105,6 +101,14 @@ const Navbar = () => {
             onClick={() => setIsOpen(false)}
           >
             Appointment
+          </Link>
+          <Link 
+            to="/barber-login" 
+            className="nav-link flex items-center" 
+            onClick={() => setIsOpen(false)}
+          >
+            <Scissors size={16} className="mr-1" />
+            Barber Login
           </Link>
         </div>
       </div>
