@@ -8,6 +8,7 @@ import { Calendar, Clock, User, Scissors, CheckCheck, XCircle, Edit } from 'luci
 import { appointmentService } from '../../services/api';
 import { useToast } from '../../hooks/use-toast';
 import RescheduleDialog from './RescheduleDialog';
+import { format, isToday, isThisWeek, isThisMonth, parseISO } from 'date-fns';
 
 interface Appointment {
   id: string;
@@ -25,7 +26,8 @@ interface Appointment {
 }
 
 const AppointmentsPanel = () => {
-  const [filter, setFilter] = useState<'all' | 'upcoming' | 'completed'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'upcoming' | 'completed'>('all');
+  const [timeFilter, setTimeFilter] = useState<'all' | 'today' | 'this-week' | 'this-month'>('all');
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
@@ -62,8 +64,33 @@ const AppointmentsPanel = () => {
   }, []);
 
   const filteredAppointments = appointments.filter(apt => {
-    if (filter === 'all') return true;
-    return apt.status === filter;
+    // Status filter
+    if (statusFilter !== 'all' && apt.status !== statusFilter) {
+      return false;
+    }
+
+    // Time filter
+    if (timeFilter !== 'all') {
+      try {
+        const appointmentDate = parseISO(apt.date);
+        
+        switch (timeFilter) {
+          case 'today':
+            return isToday(appointmentDate);
+          case 'this-week':
+            return isThisWeek(appointmentDate);
+          case 'this-month':
+            return isThisMonth(appointmentDate);
+          default:
+            return true;
+        }
+      } catch (error) {
+        console.error('Error parsing date:', apt.date);
+        return true;
+      }
+    }
+
+    return true;
   });
 
   const handleReschedule = (appointment: Appointment) => {
@@ -110,7 +137,7 @@ const AppointmentsPanel = () => {
           <p className="text-gray-400">View and manage your schedule ({filteredAppointments.length} appointments)</p>
         </div>
         
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 flex-wrap gap-2">
           <Button
             onClick={fetchAppointments}
             variant="outline"
@@ -118,15 +145,33 @@ const AppointmentsPanel = () => {
           >
             Refresh
           </Button>
+          
+          {/* Time Filter */}
           <Select
-            defaultValue="all"
-            onValueChange={(value) => setFilter(value as any)}
+            value={timeFilter}
+            onValueChange={(value) => setTimeFilter(value as any)}
           >
-            <SelectTrigger className="w-[180px] bg-dark border-gold/30">
-              <SelectValue placeholder="Filter" />
+            <SelectTrigger className="w-[140px] bg-dark border-gold/30">
+              <SelectValue placeholder="Time period" />
             </SelectTrigger>
             <SelectContent className="bg-dark-light border-gold/30">
-              <SelectItem value="all">All Appointments</SelectItem>
+              <SelectItem value="all">All Time</SelectItem>
+              <SelectItem value="today">Today</SelectItem>
+              <SelectItem value="this-week">This Week</SelectItem>
+              <SelectItem value="this-month">This Month</SelectItem>
+            </SelectContent>
+          </Select>
+          
+          {/* Status Filter */}
+          <Select
+            value={statusFilter}
+            onValueChange={(value) => setStatusFilter(value as any)}
+          >
+            <SelectTrigger className="w-[140px] bg-dark border-gold/30">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent className="bg-dark-light border-gold/30">
+              <SelectItem value="all">All Status</SelectItem>
               <SelectItem value="upcoming">Upcoming</SelectItem>
               <SelectItem value="completed">Completed</SelectItem>
             </SelectContent>
@@ -237,7 +282,7 @@ const AppointmentsPanel = () => {
             ) : (
               <TableRow>
                 <TableCell colSpan={5} className="text-center py-8 text-gray-400">
-                  No appointments found
+                  No appointments found for the selected filters
                 </TableCell>
               </TableRow>
             )}
