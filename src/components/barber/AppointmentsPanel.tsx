@@ -4,64 +4,99 @@ import { motion } from 'framer-motion';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, User, Scissors, CheckCheck, XCircle } from 'lucide-react';
+import { Calendar, Clock, User, Scissors, CheckCheck, XCircle, Edit } from 'lucide-react';
+import { appointmentService } from '../../services/api';
+import { useToast } from '../../hooks/use-toast';
+import RescheduleDialog from './RescheduleDialog';
 
-// Mock appointment data
-const MOCK_APPOINTMENTS = [
-  {
-    id: 1,
-    clientName: "Michael Johnson",
-    service: "Haircut & Beard Trim",
-    date: "2025-04-18",
-    time: "10:00 AM",
-    status: "upcoming"
-  },
-  {
-    id: 2,
-    clientName: "Sarah Williams",
-    service: "Hair Styling",
-    date: "2025-04-18",
-    time: "11:30 AM",
-    status: "upcoming"
-  },
-  {
-    id: 3,
-    clientName: "David Brown",
-    service: "Beard Trim",
-    date: "2025-04-19",
-    time: "09:00 AM",
-    status: "upcoming"
-  },
-  {
-    id: 4,
-    clientName: "Emily Davis",
-    service: "Full Package",
-    date: "2025-04-17",
-    time: "02:00 PM",
-    status: "completed"
-  },
-  {
-    id: 5,
-    clientName: "Robert Wilson",
-    service: "Haircut",
-    date: "2025-04-16",
-    time: "04:30 PM",
-    status: "completed"
-  }
-];
+interface Appointment {
+  id: string;
+  clientName?: string;
+  name?: string;
+  service: string;
+  barber: string;
+  date: string;
+  time: string;
+  status: string;
+  email?: string;
+  phone?: string;
+  notes?: string;
+  createdAt?: string;
+}
 
 const AppointmentsPanel = () => {
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'completed'>('all');
-  const [appointments, setAppointments] = useState(MOCK_APPOINTMENTS);
-  
-  useEffect(() => {
-    // Filter appointments based on selection
-    if (filter === 'all') {
-      setAppointments(MOCK_APPOINTMENTS);
-    } else {
-      setAppointments(MOCK_APPOINTMENTS.filter(app => app.status === filter));
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
+  const { toast } = useToast();
+
+  const fetchAppointments = async () => {
+    try {
+      setLoading(true);
+      const response = await appointmentService.getAppointments();
+      
+      // Map appointments and determine status based on date
+      const mappedAppointments = response.map((apt: any) => ({
+        ...apt,
+        clientName: apt.name || apt.clientName,
+        status: new Date(apt.date) > new Date() ? 'upcoming' : 'completed'
+      }));
+      
+      setAppointments(mappedAppointments);
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load appointments. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
-  }, [filter]);
+  };
+
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
+
+  const filteredAppointments = appointments.filter(apt => {
+    if (filter === 'all') return true;
+    return apt.status === filter;
+  });
+
+  const handleReschedule = (appointment: Appointment) => {
+    setSelectedAppointment(appointment);
+    setIsRescheduleOpen(true);
+  };
+
+  const handleRescheduleSuccess = () => {
+    fetchAppointments();
+    setIsRescheduleOpen(false);
+    setSelectedAppointment(null);
+    toast({
+      title: "Success",
+      description: "Appointment rescheduled successfully.",
+    });
+  };
+
+  const handleCancel = async (appointmentId: string) => {
+    // In a real app, you'd call an API to cancel the appointment
+    console.log('Canceling appointment:', appointmentId);
+    toast({
+      title: "Cancelled",
+      description: "Appointment has been cancelled.",
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="text-white">Loading appointments...</div>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -72,10 +107,17 @@ const AppointmentsPanel = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
         <div>
           <h2 className="text-2xl font-serif text-white mb-2">Your Appointments</h2>
-          <p className="text-gray-400">View and manage your schedule</p>
+          <p className="text-gray-400">View and manage your schedule ({filteredAppointments.length} appointments)</p>
         </div>
         
         <div className="flex items-center space-x-4">
+          <Button
+            onClick={fetchAppointments}
+            variant="outline"
+            className="border-gold/30 text-gold hover:bg-gold/10"
+          >
+            Refresh
+          </Button>
           <Select
             defaultValue="all"
             onValueChange={(value) => setFilter(value as any)}
@@ -104,8 +146,8 @@ const AppointmentsPanel = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {appointments.length > 0 ? (
-              appointments.map((appointment) => (
+            {filteredAppointments.length > 0 ? (
+              filteredAppointments.map((appointment) => (
                 <TableRow 
                   key={appointment.id} 
                   className="border-b border-gold/10 hover:bg-dark/30"
@@ -113,7 +155,12 @@ const AppointmentsPanel = () => {
                   <TableCell className="font-medium text-white">
                     <div className="flex items-center gap-2">
                       <User size={16} className="text-gold/70" />
-                      {appointment.clientName}
+                      <div>
+                        <div>{appointment.clientName}</div>
+                        {appointment.email && (
+                          <div className="text-xs text-gray-400">{appointment.email}</div>
+                        )}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell className="text-gray-300">
@@ -159,13 +206,16 @@ const AppointmentsPanel = () => {
                         <Button 
                           variant="outline" 
                           size="sm"
+                          onClick={() => handleReschedule(appointment)}
                           className="border-gold/30 text-gold hover:bg-gold/10"
                         >
+                          <Edit size={16} className="mr-1" />
                           Reschedule
                         </Button>
                         <Button 
                           variant="outline" 
                           size="sm"
+                          onClick={() => handleCancel(appointment.id)}
                           className="border-red-500/30 text-red-400 hover:bg-red-500/10"
                         >
                           <XCircle size={16} className="mr-1" />
@@ -194,6 +244,18 @@ const AppointmentsPanel = () => {
           </TableBody>
         </Table>
       </div>
+
+      {selectedAppointment && (
+        <RescheduleDialog
+          appointment={selectedAppointment}
+          isOpen={isRescheduleOpen}
+          onClose={() => {
+            setIsRescheduleOpen(false);
+            setSelectedAppointment(null);
+          }}
+          onSuccess={handleRescheduleSuccess}
+        />
+      )}
     </motion.div>
   );
 };

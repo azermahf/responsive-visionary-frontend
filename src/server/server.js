@@ -41,6 +41,55 @@ app.post('/api/appointments', (req, res) => {
   });
 });
 
+// Update an appointment
+app.put('/api/appointments/:id', (req, res) => {
+  const appointmentId = req.params.id;
+  const updateData = req.body;
+  
+  const appointmentIndex = appointments.findIndex(apt => apt.id === appointmentId);
+  
+  if (appointmentIndex === -1) {
+    return res.status(404).json({
+      success: false,
+      message: 'Appointment not found'
+    });
+  }
+  
+  appointments[appointmentIndex] = {
+    ...appointments[appointmentIndex],
+    ...updateData,
+    updatedAt: new Date()
+  };
+  
+  res.json({
+    success: true,
+    message: 'Appointment updated successfully!',
+    appointment: appointments[appointmentIndex]
+  });
+});
+
+// Cancel/Delete an appointment
+app.delete('/api/appointments/:id', (req, res) => {
+  const appointmentId = req.params.id;
+  
+  const appointmentIndex = appointments.findIndex(apt => apt.id === appointmentId);
+  
+  if (appointmentIndex === -1) {
+    return res.status(404).json({
+      success: false,
+      message: 'Appointment not found'
+    });
+  }
+  
+  const cancelledAppointment = appointments.splice(appointmentIndex, 1)[0];
+  
+  res.json({
+    success: true,
+    message: 'Appointment cancelled successfully!',
+    appointment: cancelledAppointment
+  });
+});
+
 // Handle contact form submissions
 app.post('/api/contact', (req, res) => {
   // Process the contact form data

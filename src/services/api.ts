@@ -23,6 +23,26 @@ export const appointmentService = {
       console.error('Error fetching appointments:', error);
       throw error;
     }
+  },
+
+  updateAppointment: async (appointmentId: string, updateData: any) => {
+    try {
+      const response = await axios.put(`${API_URL}/appointments/${appointmentId}`, updateData);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating appointment:', error);
+      throw error;
+    }
+  },
+
+  cancelAppointment: async (appointmentId: string) => {
+    try {
+      const response = await axios.delete(`${API_URL}/appointments/${appointmentId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error cancelling appointment:', error);
+      throw error;
+    }
   }
 };
 
